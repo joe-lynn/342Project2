@@ -1,7 +1,6 @@
 
 
 import akka.actor.UntypedActor;
-import akka.actor.Actors;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class Jail extends UntypedActor {
   }
 
   private void onReceive(Passenger passenger) {
-    System.out.println(passenger.getName + " has entered the jail.");
+    System.out.println(passenger.getName() + " has entered the jail.");
     jailed.add(passenger);
   }
 }

@@ -8,7 +8,7 @@ public class Passenger {
     this.name = name;
   }
 
-  public getName() {
+  public String getName() {
     return name;
   }
 }
