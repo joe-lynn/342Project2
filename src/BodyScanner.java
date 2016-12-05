@@ -3,6 +3,10 @@
 import akka.actor.UntypedActor;
 import akka.actor.ActorRef;
 
+/**
+* The Actor for the Body Scanner.
+* Code is pretty much the same as the Baggage Scanner.
+*/
 public class BodyScanner extends UntypedActor {
 
   private final int lineNumber;
