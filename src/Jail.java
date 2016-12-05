@@ -11,7 +11,11 @@ import java.util.ArrayList;
 */
 public class Jail extends UntypedActor {
 
-  private List<Passenger> jailed = new ArrayList<Passenger>();
+  private List<Passenger> jailed;
+
+  public Jail() {
+     jailed = new ArrayList<Passenger>();
+  }
   
   public void onReceive(Object message) {
     if(message instanceof Passenger) {
