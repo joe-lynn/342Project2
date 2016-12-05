@@ -1,5 +1,8 @@
 
 
+/**
+* The message class used by the scanners to report to the security station.
+*/
 public class ScanReport {
 
   private final Passenger person;
@@ -16,5 +19,21 @@ public class ScanReport {
 
   public boolean getResult() {
     return passed;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if(obj instanceof ScanReport) {
+      if(person.equals(((ScanReport)obj).getSubject())) {
+	return true;
+      }
+    }
+
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return person.hashCode();
   }
 }

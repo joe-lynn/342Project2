@@ -6,6 +6,10 @@ import akka.actor.ActorRef;
 import java.util.Queue;
 import java.util.LinkedList;
 
+/**
+* Security Station Actor aggregates results from the scanners to determine
+* whether a Passenger has passed the security check.
+*/
 public class SecurityStation extends UntypedActor {
 
   private final int lineNumber;
