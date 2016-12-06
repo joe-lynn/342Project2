@@ -34,7 +34,7 @@ public class DocumentCheck extends UntypedActor {
                 lastQueue = 0;
             }
             //This is a test to see if actors are successfully being passed.
-            //System.out.println(passenger.getName());
+            System.out.println(passenger.getName());
             queueList.get(lastQueue).getBagScanner().tell(passenger, getSelf());
             queueList.get(lastQueue).getBodyScanner().tell(passenger, getSelf());
         }
