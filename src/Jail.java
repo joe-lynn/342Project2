@@ -30,8 +30,8 @@ public class Jail extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    System.out.println("Jail received kill command");
-    if(--lineCount == 0){
+    System.out.println("Jail received kill command from " + getSender().path().name());
+    if(lineCount == 0){
       this.getContext().stop(getSelf());
     }
   }

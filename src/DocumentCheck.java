@@ -11,7 +11,6 @@ public class DocumentCheck extends UntypedActor {
     private final ArrayList<ActorRef> queueList; ;
     private int lastQueue = -1;
 
-
     public DocumentCheck(ArrayList<ActorRef> queues) {
         queueList = queues;
     }
@@ -25,13 +24,15 @@ public class DocumentCheck extends UntypedActor {
     }
 
     private void onReceive(StopMessage killCommand){
-        System.out.println("Document check has received kill command");
+        System.out.println(getSelf().path().name()+ " has received kill command");
+
         for(ActorRef ref : queueList){
-            System.out.println("Sending kill command to queues");
+            System.out.println("Sending kill command to " + ref.path().name());
             ref.tell(killCommand, getSelf());
         }
 
         this.getContext().stop(getSelf());
+        System.out.println(getSelf().path().name() +" has shut off.");
     }
 
 
