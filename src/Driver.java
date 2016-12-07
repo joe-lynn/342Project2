@@ -19,7 +19,8 @@ public class Driver{
         //Create the jail ActorRef
         for (int i = 0; i < LINE_COUNT; i += 1){
             //Create each queue
-            Queues.add(i, new ScanQueue(i, Jail, system));
+            //TODO Disabled for compile reasons.
+            //Queues.add(i, new ScanQueue(i, Jail, system));
         }
         final ActorRef DCheck = system.actorOf(Props.create(DocumentCheck.class, Queues), "DCheck");
 

@@ -12,6 +12,13 @@ import java.util.List;
  */
 public class DocumentCheck extends UntypedActor {
 
+//for compile reasons
+  public void onReceive(Object o) {}
+
+/*
+* Currently commenting out code.
+* Your code doesn't match the design for the queue system so we're going to need
+* to rewurite some of it.
     private final ArrayList<ScanQueue> queueList; ;
     private int lastQueue = -1;
 
@@ -63,4 +70,5 @@ public class DocumentCheck extends UntypedActor {
     public String toString(){
         return "Document Check";
     }
+    */
 }

@@ -1,33 +1,80 @@
+
+
+import akka.actor.UntypedActor;
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
 
-public class ScanQueue {
-    private int lineNumber;
-    final ActorRef mySS;
-    final ActorRef myBody;
-    final ActorRef myBags;
-    public ScanQueue(int lineNum, ActorRef theJail, ActorSystem system){
-        lineNumber = lineNum;
-        String line = Integer.toString(lineNum);
-        mySS =  system.actorOf(Props.create(SecurityStation.class, lineNumber, theJail), "Security_Station_" + line);
-        //Create the security station for this line
+import java.util.Queue;
+import java.util.LinkedList;
 
-        myBody =  system.actorOf(Props.create(BodyScanner.class, lineNumber, mySS), "Body_Scanner_" + line);
-        //Create the body scanner for this line
+public class ScanQueue extends UntypedActor {
 
-        myBags = system.actorOf(Props.create(BaggageScanner.class, lineNumber, mySS), "Baggage_Scanner_" + line);
-        //Create the bag scanner for this line
+  private final int lineNumber;
+  private final ActorRef bodyScan;
+  private final ActorRef bagScan;
+
+  private final Queue<Passenger> bagQueue;
+  private final Queue<Passenger> bodyQueue;
+
+  private boolean bagReady;
+  private boolean bodyReady;
+
+  public ScanQueue(int line, ActorRef bodyScan, ActorRef bagScan) {
+    lineNumber = line;
+    this.bodyScan = bodyScan;
+    this.bagScan = bagScan;
+    
+    bagQueue = new LinkedList<Passenger>();
+    bodyQueue = new LinkedList<Passenger>();
+
+    bagReady = true;
+    bodyReady = true;
+  }
+
+  public void onReceive(Object message) {
+    if(message instanceof Passenger) {
+      onReceive((Passenger)message);
+    }
+    
+    if(message instanceof BagReady) {
+      onReceive((BagReady)message);
     }
 
-    public ActorRef getSS(){
-        return mySS;
+    if(message instanceof BodyReady) {
+      onReceive((BodyReady)message);
+    }
+  }
+
+  private void onReceive(Passenger passenger) {
+    if(bodyReady) {
+      bodyScan.tell(passenger, getSelf());
+      bodyReady = false;
+    } else {
+      bodyQueue.add(passenger);
     }
 
-    public ActorRef getBodyScanner(){
-        return myBody;
+    if(bagReady) {
+      bagScan.tell(passenger, getSelf());
+      bagReady = false;
+    } else {
+      bagQueue.add(passenger);
     }
-    public ActorRef getBagScanner(){
-        return myBags;
+  }
+
+  private void onReceive(BagReady ready) {
+    if(bagQueue.peek() != null) {
+      bagScan.tell(bagQueue.poll(), getSelf());
+      bagReady = false;
+    } else {
+      bagReady = true;
     }
+  }
+
+  private void onReceive(BodyReady ready) {
+    if(bodyQueue.peek() != null) {
+      bodyScan.tell(bodyQueue.poll(), getSelf());
+      bodyReady = false;
+    } else {
+      bodyReady = true;
+    }
+  }
 }
