@@ -7,7 +7,10 @@ public class Driver{
     private static final int LINE_COUNT = 3;
     private static final int PASSENGERS = 10;
 
-    private static final ArrayList<ScanQueue> Queues = new ArrayList<>();
+    private static final ArrayList<ActorRef> Queues = new ArrayList<>();
+    private static final ArrayList<ActorRef> Bags = new ArrayList<>();
+    private static final ArrayList<ActorRef> Bodies = new ArrayList<>();
+    private static final ArrayList<ActorRef> SecStations = new ArrayList<>();
     private static final ArrayList<Passenger> Passengers = new ArrayList<>();
 
     public static void main(String[] args){
@@ -17,10 +20,13 @@ public class Driver{
         //Initialize system to create ActorRef
         final ActorRef Jail =  system.actorOf(Props.create(Jail.class, LINE_COUNT), "Jail");
         //Create the jail ActorRef
+
         for (int i = 0; i < LINE_COUNT; i += 1){
-            //Create each queue
-            //TODO Disabled for compile reasons.
-            //Queues.add(i, new ScanQueue(i, Jail, system));
+            String ID = Integer.toString(i);
+            SecStations.add(system.actorOf(Props.create(SecurityStation.class, LINE_COUNT, Jail), "SS-" + ID));
+            Bags.add(system.actorOf(Props.create(BaggageScanner.class, LINE_COUNT, SecStations.get(i)), "BagScan-" + ID));
+            Bodies.add(system.actorOf(Props.create(BodyScanner.class, LINE_COUNT, SecStations.get(i)), "BodyScan-" + ID));
+            Queues.add(system.actorOf(Props.create(ScanQueue.class, LINE_COUNT,Bodies.get(i), Bags.get(i)), "Queue-" + ID));
         }
         final ActorRef DCheck = system.actorOf(Props.create(DocumentCheck.class, Queues), "DCheck");
 

@@ -6,24 +6,13 @@ import akka.actor.ActorRef;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The Actor for the Body Scanner.
- * Code is pretty much the same as the Baggage Scanner.
- */
 public class DocumentCheck extends UntypedActor {
 
-//for compile reasons
-  public void onReceive(Object o) {}
-
-/*
-* Currently commenting out code.
-* Your code doesn't match the design for the queue system so we're going to need
-* to rewurite some of it.
-    private final ArrayList<ScanQueue> queueList; ;
+    private final ArrayList<ActorRef> queueList; ;
     private int lastQueue = -1;
 
 
-    public DocumentCheck(ArrayList<ScanQueue> queues) {
+    public DocumentCheck(ArrayList<ActorRef> queues) {
         queueList = queues;
     }
 
@@ -43,22 +32,11 @@ public class DocumentCheck extends UntypedActor {
             if (lastQueue == queueList.size()) {
                 lastQueue = 0;
             }
-            //Grab actor refs to reduce code size
-            ActorRef bagScan = queueList.get(lastQueue).getBagScanner();
-            ActorRef bodyScan = queueList.get(lastQueue).getBodyScanner();
 
-            //Send the passenger to the bagScan
-            bagScan.tell(passenger, getSelf());
-            //Print a statement
+            queueList.get(lastQueue).tell(passenger, getSelf());
+
             System.out.println(passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
-                    bagScan.path().name());
-
-            //Send the passenger to the bodyScan
-            bodyScan.tell(passenger, getSelf());
-            //Print a statement
-            System.out.println(passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
-                    bodyScan.path().name());
-
+                    queueList.get(lastQueue).path().name());
         }
         else{
             //print fail statement
@@ -66,9 +44,4 @@ public class DocumentCheck extends UntypedActor {
         }
 
     }
-    @Override
-    public String toString(){
-        return "Document Check";
-    }
-    */
 }

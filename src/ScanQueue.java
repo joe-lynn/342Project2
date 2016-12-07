@@ -22,7 +22,7 @@ public class ScanQueue extends UntypedActor {
     lineNumber = line;
     this.bodyScan = bodyScan;
     this.bagScan = bagScan;
-    
+
     bagQueue = new LinkedList<Passenger>();
     bodyQueue = new LinkedList<Passenger>();
 
@@ -76,5 +76,7 @@ public class ScanQueue extends UntypedActor {
     } else {
       bodyReady = true;
     }
+
+
   }
 }
