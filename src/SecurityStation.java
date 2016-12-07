@@ -37,7 +37,7 @@ public class SecurityStation extends UntypedActor {
       ScanReport report2 = buffer.poll();
       //Tell the jail if the passenger fails either scan.
       if(!(report.getResult() && report2.getResult())) {
-	jail.tell(report.getSubject(), getSelf());
+	    jail.tell(report.getSubject(), getSelf());
       }
     } else {
       buffer.add(report);

@@ -29,8 +29,4 @@ public class BaggageScanner extends UntypedActor {
     ScanReport results = new ScanReport(passenger, (Math.random()*5 < 4));
     station.tell(results,getSelf());
   }
-
-  public Integer getID(){
-    return lineNumber;
-  }
 }

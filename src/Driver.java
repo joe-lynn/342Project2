@@ -29,6 +29,7 @@ public class Driver{
 
         for(int i = 0; i < PASSENGERS; i += 1){
             DCheck.tell(Passengers.get(i), null);
+            //print statement
             System.out.println(Passengers.get(i).getName() + " is being sent to the Document Check.");
         }
 
