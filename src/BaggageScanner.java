@@ -26,7 +26,7 @@ public class BaggageScanner extends UntypedActor {
 
   public void onReceive(Passenger passenger) {
     //Check whether the passenger passes the security check.
-    ScanReport results = new ScanReport(passenger, (Math.random()*5 < 1));
+    ScanReport results = new ScanReport(passenger, (Math.random()*5 < 4));
     station.tell(results,getSelf());
   }
 }
