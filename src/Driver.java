@@ -22,10 +22,11 @@ public class Driver{
         //Create the jail ActorRef
 
         for (int i = 0; i < LINE_COUNT; i += 1){
-            SecStations.add(system.actorOf(Props.create(SecurityStation.class, LINE_COUNT, Jail)));
-            Bags.add(system.actorOf(Props.create(BaggageScanner.class, LINE_COUNT, SecStations.get(i))));
-            Bodies.add(system.actorOf(Props.create(BodyScanner.class, LINE_COUNT, SecStations.get(i))));
-            Queues.add(system.actorOf(Props.create(ScanQueue.class, LINE_COUNT,Bodies.get(i), Bags.get(i))));
+            String ID = Integer.toString(i);
+            SecStations.add(system.actorOf(Props.create(SecurityStation.class, LINE_COUNT, Jail), "SS-" + ID));
+            Bags.add(system.actorOf(Props.create(BaggageScanner.class, LINE_COUNT, SecStations.get(i)), "BagScan-" + ID));
+            Bodies.add(system.actorOf(Props.create(BodyScanner.class, LINE_COUNT, SecStations.get(i)), "BodyScan-" + ID));
+            Queues.add(system.actorOf(Props.create(ScanQueue.class, LINE_COUNT,Bodies.get(i), Bags.get(i)), "Queue-" + ID));
         }
         final ActorRef DCheck = system.actorOf(Props.create(DocumentCheck.class, Queues), "DCheck");
 
