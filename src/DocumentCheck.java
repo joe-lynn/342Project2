@@ -27,16 +27,30 @@ public class DocumentCheck extends UntypedActor {
     }
 
     public void onReceive(Passenger passenger) {
-
+        System.out.println(passenger.getName() + " has arrived at the Document Check.");
         if(Math.random()*5 < 4){
+            System.out.println(passenger.getName() + " has passed the Document Check.");
             lastQueue += 1;
             if (lastQueue == queueList.size()) {
                 lastQueue = 0;
             }
-            //This is a test to see if actors are successfully being passed.
-            System.out.println(passenger.getName());
-            queueList.get(lastQueue).getBagScanner().tell(passenger, getSelf());
-            queueList.get(lastQueue).getBodyScanner().tell(passenger, getSelf());
+            ActorRef bagScan = queueList.get(lastQueue).getBagScanner();
+            ActorRef bodyScan = queueList.get(lastQueue).getBodyScanner();
+            bagScan.tell(passenger, getSelf());
+            System.out.println(passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
+                    bagScan.path().name());
+            bodyScan.tell(passenger, getSelf());
+            System.out.println(passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
+                    bodyScan.path().name());
+
         }
+        else{
+            System.out.println(passenger.getName() + " has failed the Document Check.");
+        }
+
+    }
+    @Override
+    public String toString(){
+        return "Document Check";
     }
 }

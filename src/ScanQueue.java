@@ -9,14 +9,14 @@ public class ScanQueue {
     final ActorRef myBags;
     public ScanQueue(int lineNum, ActorRef theJail, ActorSystem system){
         lineNumber = lineNum;
-
-        mySS =  system.actorOf(Props.create(SecurityStation.class, lineNumber, theJail));
+        String line = Integer.toString(lineNum);
+        mySS =  system.actorOf(Props.create(SecurityStation.class, lineNumber, theJail), "Security_Station_" + line);
         //Create the security station for this line
 
-        myBody =  system.actorOf(Props.create(BodyScanner.class, lineNumber, mySS));
+        myBody =  system.actorOf(Props.create(BodyScanner.class, lineNumber, mySS), "Body_Scanner_" + line);
         //Create the body scanner for this line
 
-        myBags = system.actorOf(Props.create(BaggageScanner.class, lineNumber, mySS));
+        myBags = system.actorOf(Props.create(BaggageScanner.class, lineNumber, mySS), "Baggage_Scanner_" + line);
         //Create the bag scanner for this line
     }
 
