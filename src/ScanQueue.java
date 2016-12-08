@@ -56,9 +56,9 @@ public class ScanQueue extends UntypedActor {
   }
 
   private void onReceive(Passenger passenger) {
-    System.out.println("Passenger " + passenger.getName() + " has arrived at the Queue.");
+    System.out.println("Passenger " + passenger.getName() + " has arrived at " + getSelf().path().name());
     if(bodyReady) {
-      System.out.println("Passenger " + passenger.getName() + " is being sent to body scan");
+      System.out.println("Passenger " + passenger.getName() + " is being sent to " + bodyScan.path().name());
       bodyScan.tell(passenger, getSelf());
       bodyReady = false;
     } else {
@@ -66,7 +66,7 @@ public class ScanQueue extends UntypedActor {
     }
 
     if(bagReady) {
-      System.out.println("Passenger " + passenger.getName() + " bag is being sent to bag scan");
+      System.out.println("Passenger " + passenger.getName() + "'s bag is being sent to " + bagScan.path().name());
       bagScan.tell(passenger, getSelf());
       bagReady = false;
     } else {
