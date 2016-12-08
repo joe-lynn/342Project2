@@ -36,8 +36,16 @@ public class BodyScanner extends UntypedActor {
   }
 
   public void onReceive(Passenger passenger) {
+    System.out.println("Passenger " +passenger.getName() + " has arrived at " + getSelf().path().name());
+
     //Check whether the passenger passes the security check.
     ScanReport results = new ScanReport(passenger, (Math.random()*5 < 4));
+    if (results.equals(true)){
+      System.out.println("Passenger " + passenger.getName() + " has passed his body check.");
+    }
+    else{
+      System.out.println("Passenger " + passenger.getName() + " has failed his body check.");
+    }
     station.tell(results,getSelf());
 
     //Let the line know that the scanner is ready.

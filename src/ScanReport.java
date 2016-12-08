@@ -12,7 +12,6 @@ public class ScanReport {
     person = subject;
     this.passed = result;
   }
-
   public Passenger getSubject() {
     return person;
   }
@@ -25,7 +24,7 @@ public class ScanReport {
   public boolean equals(Object obj) {
     if(obj instanceof ScanReport) {
       if(person.equals(((ScanReport)obj).getSubject())) {
-	return true;
+	    return true;
       }
     }
 

@@ -31,14 +31,23 @@ public class BaggageScanner extends UntypedActor {
 
   private void onReceive(StopMessage killCommand){
     System.out.println(getSelf().path().name()+" has received kill command from " + getSender().path().name());
+
     System.out.println(getSelf().path().name()+ " is sending kill command to " + station.path().name());
     station.tell(killCommand, getSelf());
+
     this.getContext().stop(getSelf());
   }
 
   public void onReceive(Passenger passenger) {
     //Check whether the passenger passes the security check.
+    System.out.println("Passenger " + passenger.getName() + " has arrived at " + getSelf().path().name());
     ScanReport results = new ScanReport(passenger, (Math.random()*5 < 4));
+    if (results.equals(true)){
+      System.out.println("Passenger " + passenger.getName() + " has passed his bag check.");
+    }
+    else{
+      System.out.println("Passenger " + passenger.getName() + " has failed his bag check.");
+    }
     station.tell(results,getSelf());
 
     //Let the line know that the scanner is ready.

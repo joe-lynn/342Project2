@@ -49,6 +49,7 @@ public class SecurityStation extends UntypedActor {
       if(!(report.getResult() && report2.getResult())) {
 	    jail.tell(report.getSubject(), getSelf());
       }
+      System.out.println("Passenger " + report.getSubject().getName() + " has left the security area.");
     } else {
       buffer.add(report);
     }
