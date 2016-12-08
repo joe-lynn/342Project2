@@ -29,8 +29,8 @@ public class BodyScanner extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    System.out.println("Body Scan has received kill command");
-    System.out.println("Sending kill command to security station");
+      System.out.println(getSelf().path().name()+" has received kill command from " + getSender().path().name());
+      System.out.println(getSelf().path().name()+ " is sending kill command to " + station.path().name());
       station.tell(killCommand, getSelf());
       this.getContext().stop(getSelf());
   }

@@ -25,12 +25,12 @@ public class DocumentCheck extends UntypedActor {
     }
 
     private void onReceive(StopMessage killCommand){
-        System.out.println("Document check has received kill command");
+        System.out.println(getSelf().path().name() + " has received kill command");
         for(ActorRef ref : queueList){
-            System.out.println("Sending kill command to queues");
+            System.out.println("Sending kill command to " + ref.path().name());
             ref.tell(killCommand, getSelf());
         }
-
+        System.out.println(getSelf().path().name() + " is terminating.");
         this.getContext().stop(getSelf());
     }
 
