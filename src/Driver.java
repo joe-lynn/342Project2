@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Driver{
     public static final int LINE_COUNT = 3;
-    public static final int PASSENGERS = 7;
+    public static final int PASSENGERS = 6;
 
     private static final ArrayList<ActorRef> Queues = new ArrayList<>();
     private static final ArrayList<ActorRef> Bags = new ArrayList<>();

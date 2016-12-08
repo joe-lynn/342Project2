@@ -47,6 +47,9 @@ public class ScanQueue extends UntypedActor {
       if (message.equals("BAGDONE")){
         getSender().tell("KILL", getSelf());
         if(stoppable){
+          bodyScan.tell(new StopMessage(), self());
+          bagScan.tell(new StopMessage(), self());
+          System.out.println(getSelf().path().name() + " has shut off.");
           getContext().stop(getSelf());
         }
         else{
@@ -56,6 +59,9 @@ public class ScanQueue extends UntypedActor {
       if (message.equals("BODYDONE")){
         getSender().tell("KILL", getSelf());
         if(stoppable){
+          bodyScan.tell(new StopMessage(), self());
+          bagScan.tell(new StopMessage(), self());
+          System.out.println(getSelf().path().name() + " has shut off.");
           getContext().stop(getSelf());
         }
         else{

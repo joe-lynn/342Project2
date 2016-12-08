@@ -35,8 +35,8 @@ public class BaggageScanner extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    System.out.println("Bag Scan has received kill command");
-    System.out.println("Sending kill command to security station");
+    System.out.println(getSelf().path().name()+ " has received kill command.");
+    System.out.println("Sending kill command to " + station.path().name() + " from " + self().path().name());
     station.tell(killCommand, getSelf());
     this.getContext().stop(getSelf());
   }
