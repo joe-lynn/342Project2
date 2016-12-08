@@ -15,7 +15,7 @@ public class SecurityStation extends UntypedActor {
   private final int lineNumber;
   private final ActorRef jail;
   private final Queue<ScanReport> buffer;
-  private int killCountdown = 2;
+  private int killCountdown = 3;
 
   public SecurityStation(int line, ActorRef jail) {
     lineNumber = line;
@@ -33,8 +33,8 @@ public class SecurityStation extends UntypedActor {
 
   private void onReceive(StopMessage killCommand){
     if(--killCountdown == 0){
-      jail.tell(killCommand, getSelf());
-      this.getContext().stop(getSelf());
+      //jail.tell(killCommand, getSelf());
+      //this.getContext().stop(getSelf());
     }
   }
 

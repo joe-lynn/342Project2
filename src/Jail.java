@@ -37,7 +37,7 @@ public class Jail extends UntypedActor {
   }
 
   private void onReceive(Passenger passenger) {
-    System.out.println(passenger.getName() + " has entered the jail.");
+    System.out.println("Passenger " + passenger.getName() + " has entered the jail.");
     jailed.add(passenger);
   }
 }
