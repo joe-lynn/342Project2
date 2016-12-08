@@ -11,6 +11,7 @@ public class BodyScanner extends UntypedActor {
 
   private final int lineNumber;
   private final ActorRef station;
+  private int duty;
 
   //Saves us from needing to recreate the message every time
   private final BodyReady READY = new BodyReady();
@@ -18,6 +19,10 @@ public class BodyScanner extends UntypedActor {
   public BodyScanner(int line, ActorRef securityStation) {
     lineNumber = line;
     station = securityStation;
+    duty = Driver.PASSENGERS/Driver.LINE_COUNT;
+    if (Driver.PASSENGERS%Driver.LINE_COUNT > lineNumber){
+      duty += 1;
+    }
   }
 
   public void onReceive(Object message) {
@@ -36,11 +41,16 @@ public class BodyScanner extends UntypedActor {
   }
 
   public void onReceive(Passenger passenger) {
+
     //Check whether the passenger passes the security check.
     ScanReport results = new ScanReport(passenger, (Math.random()*5 < 4));
     station.tell(results,getSelf());
 
     //Let the line know that the scanner is ready.
     getSender().tell(READY, getSelf());
+    duty -= 1;
+    if (duty == 0) {
+      getSender().tell("BODYDONE", getSelf());
+    }
   }
 }

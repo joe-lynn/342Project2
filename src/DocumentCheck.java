@@ -26,10 +26,10 @@ public class DocumentCheck extends UntypedActor {
     private void onReceive(StopMessage killCommand){
         System.out.println(getSelf().path().name()+ " has received kill command");
 
-        for(ActorRef ref : queueList){
-            System.out.println("Sending kill command to " + ref.path().name());
-            ref.tell(killCommand, getSelf());
-        }
+        //for(ActorRef ref : queueList){
+        //    System.out.println("Sending kill command to " + ref.path().name());
+        //ref.tell(killCommand, getSelf());
+        //}
 
         this.getContext().stop(getSelf());
         System.out.println(getSelf().path().name() +" has shut off.");

@@ -9,65 +9,61 @@ import java.util.LinkedList;
 public class ScanQueue extends UntypedActor {
 
   private final int lineNumber;
-  private final ActorRef bodyScan;
-  private final ActorRef bagScan;
+      private final ActorRef bodyScan;
+      private final ActorRef bagScan;
 
-  private final Queue<Passenger> bagQueue;
-  private final Queue<Passenger> bodyQueue;
+      private final Queue<Passenger> bagQueue;
+      private final Queue<Passenger> bodyQueue;
 
-  private boolean stoppable;
-  private boolean bagReady;
-  private boolean bodyReady;
+      private boolean stoppable;
+      private boolean bagReady;
+      private boolean bodyReady;
 
   public ScanQueue(int line, ActorRef bodyScan, ActorRef bagScan) {
-    lineNumber = line;
-    this.bodyScan = bodyScan;
-    this.bagScan = bagScan;
+        lineNumber = line;
+        this.bodyScan = bodyScan;
+        this.bagScan = bagScan;
 
-    bagQueue = new LinkedList<Passenger>();
-    bodyQueue = new LinkedList<Passenger>();
+        bagQueue = new LinkedList<Passenger>();
+        bodyQueue = new LinkedList<Passenger>();
 
-    bagReady = true;
-    bodyReady = true;
-    stoppable = false;
-  }
+        bagReady = true;
+        bodyReady = true;
+        stoppable = false;
+      }
 
-  public void onReceive(Object message) {
-    if(message instanceof Passenger) {
-      onReceive((Passenger)message);
-    }
-    
-    if(message instanceof BagReady) {
-      onReceive((BagReady)message);
+    public void onReceive(Object message) {
+      if(message instanceof Passenger) {
+        onReceive((Passenger)message);
+      }
+
+      if(message instanceof BagReady) {
+        onReceive((BagReady)message);
+      }
+
+      if(message instanceof BodyReady) {
+        onReceive((BodyReady)message);
+      }
+      if (message.equals("BAGDONE")){
+        getSender().tell("KILL", getSelf());
+        if(stoppable){
+          getContext().stop(getSelf());
+        }
+        else{
+          stoppable = true;
+        }
+      }
+      if (message.equals("BODYDONE")){
+        getSender().tell("KILL", getSelf());
+        if(stoppable){
+          getContext().stop(getSelf());
+        }
+        else{
+          stoppable = true;
+        }
+      }
     }
 
-    if(message instanceof BodyReady) {
-      onReceive((BodyReady)message);
-    }
-    if(message instanceof StopRequest){
-      onReceive((StopRequest)message);
-    }
-    else if(message instanceof StopMessage){
-      onReceive((StopMessage)message);
-    }
-  }
-
-  private void onReceive(StopMessage request){
-      System.out.println(getSelf().path().name() + " has received kill command from " + getSender().path().name());
-      System.out.println("Sending kill command to " + bodyScan.path().name());
-      bodyScan.tell(request, getSelf());
-      System.out.println("Sending kill command to " + bagScan.path().name());
-      bagScan.tell(request, getSelf());
-  }
-
-  private void onReceive(StopRequest killCommand){
-    if (stoppable){
-      getContext().stop(getSelf());
-    }
-    else{
-      stoppable = true;
-    }
-  }
 
   private void onReceive(Passenger passenger) {
     System.out.println("Passenger " + passenger.getName() + " has arrived at the Queue.");

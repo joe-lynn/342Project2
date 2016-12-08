@@ -12,6 +12,7 @@ public class BaggageScanner extends UntypedActor {
 
   private final int lineNumber;
   private final ActorRef station;
+  private int duty;
 
   //Saves us from needing to recreate the message every time
   private final BagReady READY = new BagReady();
@@ -19,6 +20,10 @@ public class BaggageScanner extends UntypedActor {
   public BaggageScanner(int line, ActorRef securityStation) {
     lineNumber = line;
     station = securityStation;
+    duty = Driver.PASSENGERS/Driver.LINE_COUNT;
+    if (Driver.PASSENGERS%Driver.LINE_COUNT > lineNumber){
+      duty += 1;
+    }
   }
 
   public void onReceive(Object message) {
@@ -43,5 +48,9 @@ public class BaggageScanner extends UntypedActor {
 
     //Let the line know that the scanner is ready.
     getSender().tell(READY, getSelf());
+    duty -= 1;
+    if (duty == 0) {
+      getSender().tell("BODYDONE", getSelf());
+    }
   }
 }
