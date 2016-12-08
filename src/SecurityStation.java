@@ -32,10 +32,6 @@ public class SecurityStation extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    if(--killCountdown == 0){
-      //jail.tell(killCommand, getSelf());
-      //this.getContext().stop(getSelf());
-    }
   }
 
   private void onReceive(ScanReport report) {

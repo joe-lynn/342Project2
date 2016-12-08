@@ -19,7 +19,7 @@ public class ScanQueue extends UntypedActor {
       private boolean bagReady;
       private boolean bodyReady;
 
-  public ScanQueue(int line, ActorRef bodyScan, ActorRef bagScan) {
+  public ScanQueue(int line, ActorRef bodyScan, ActorRef bagScan, ActorRef securityStation) {
         lineNumber = line;
         this.bodyScan = bodyScan;
         this.bagScan = bagScan;
@@ -45,11 +45,11 @@ public class ScanQueue extends UntypedActor {
         onReceive((BodyReady)message);
       }
       if (message.equals("BAGDONE")){
-        getSender().tell("KILL", getSelf());
         if(stoppable){
           bodyScan.tell(new StopMessage(), self());
           bagScan.tell(new StopMessage(), self());
           System.out.println(getSelf().path().name() + " has shut off.");
+
           getContext().stop(getSelf());
         }
         else{
@@ -57,7 +57,6 @@ public class ScanQueue extends UntypedActor {
         }
       }
       if (message.equals("BODYDONE")){
-        getSender().tell("KILL", getSelf());
         if(stoppable){
           bodyScan.tell(new StopMessage(), self());
           bagScan.tell(new StopMessage(), self());
@@ -73,6 +72,8 @@ public class ScanQueue extends UntypedActor {
 
   private void onReceive(Passenger passenger) {
     System.out.println("Passenger " + passenger.getName() + " has arrived at " + getSelf().path().name());
+
+
     if(bodyReady) {
       System.out.println("Passenger " + passenger.getName() + " is being sent to " + bodyScan.path().name());
       bodyScan.tell(passenger, getSelf());

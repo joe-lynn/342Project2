@@ -4,8 +4,8 @@ import akka.remote.EndpointManager;
 import java.util.ArrayList;
 
 public class Driver{
-    public static final int LINE_COUNT = 3;
-    public static final int PASSENGERS = 6;
+    public static final int LINE_COUNT = 2;
+    public static final int PASSENGERS = 12;
 
     private static final ArrayList<ActorRef> Queues = new ArrayList<>();
     private static final ArrayList<ActorRef> Bags = new ArrayList<>();
@@ -23,10 +23,14 @@ public class Driver{
 
         for (int i = 0; i < LINE_COUNT; i += 1){
             String ID = Integer.toString(i);
-            SecStations.add(system.actorOf(Props.create(SecurityStation.class, i, Jail), "SS-" + ID));
-            Bags.add(system.actorOf(Props.create(BaggageScanner.class, i, SecStations.get(i)), "BagScan-" + ID));
-            Bodies.add(system.actorOf(Props.create(BodyScanner.class, i, SecStations.get(i)), "BodyScan-" + ID));
-            Queues.add(system.actorOf(Props.create(ScanQueue.class, i,Bodies.get(i), Bags.get(i)), "Queue-" + ID));
+            SecStations.add(system.actorOf(Props.create(SecurityStation.class, i, Jail),
+                    "SS-" + ID));
+            Bags.add(system.actorOf(Props.create(BaggageScanner.class, i, SecStations.get(i)),
+                    "BagScan-" + ID));
+            Bodies.add(system.actorOf(Props.create(BodyScanner.class, i, SecStations.get(i)),
+                    "BodyScan-" + ID));
+            Queues.add(system.actorOf(Props.create(ScanQueue.class, i,Bodies.get(i), Bags.get(i), SecStations.get(i)),
+                    "Queue-" + ID));
         }
         final ActorRef DCheck = system.actorOf(Props.create(DocumentCheck.class, Queues), "DCheck");
 
@@ -39,9 +43,8 @@ public class Driver{
             //print statement
             System.out.println("Passenger " + Passengers.get(i).getName() + " is being sent to the Document Check.");
         }
-        StopMessage killCommand = new StopMessage();
         System.out.println("Sending Kill Command to Document Check");
-        DCheck.tell(killCommand, ActorRef.noSender());
+        DCheck.tell(new StopMessage(), ActorRef.noSender());
 
     }
 
