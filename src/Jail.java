@@ -30,12 +30,17 @@ public class Jail extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    System.out.println("Jail received kill command");
+    System.out.println("Jail received kill command.");
     if(--lineCount == 0){
+<<<<<<< HEAD
       for (Passenger prisoner: jailed){
         System.out.println("Passenger " + prisoner + "has been transferred to permanent detention.");
       }
       this.getContext().stop(getSelf());
+=======
+      //Shutdown what remains of the system. Jail is the last to die.
+      this.getContext().system().terminate();
+>>>>>>> refs/remotes/origin/master
     }
   }
 
