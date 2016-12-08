@@ -17,6 +17,7 @@ public class ScanQueue extends UntypedActor {
 
   private boolean bagReady;
   private boolean bodyReady;
+  private boolean awaitingTermination = false;
 
   public ScanQueue(int line, ActorRef bodyScan, ActorRef bagScan) {
     lineNumber = line;
@@ -34,7 +35,7 @@ public class ScanQueue extends UntypedActor {
     if(message instanceof Passenger) {
       onReceive((Passenger)message);
     }
-    
+
     if(message instanceof BagReady) {
       onReceive((BagReady)message);
     }
@@ -48,11 +49,8 @@ public class ScanQueue extends UntypedActor {
 
   private void onReceive(StopMessage killCommand){
     System.out.println("Queue has received kill command");
-    System.out.println("Sending kill command to body scan");
-      bodyScan.tell(killCommand, getSelf());
-    System.out.println("Sending kill command to bag scan");
-      bagScan.tell(killCommand, getSelf());
-      this.getContext().stop(getSelf());
+    awaitingTermination = true;
+    attemptTermination();
   }
 
   private void onReceive(Passenger passenger) {
@@ -82,6 +80,10 @@ public class ScanQueue extends UntypedActor {
     } else {
       bagReady = true;
     }
+
+    if(awaitingTermination) {
+      attemptTermination();
+    }
   }
 
   private void onReceive(BodyReady ready) {
@@ -92,6 +94,18 @@ public class ScanQueue extends UntypedActor {
       bodyReady = true;
     }
 
+    if(awaitingTermination) {
+      attemptTermination();
+    }
+  }
 
+  private void attemptTermination() {
+    if(bagReady && bodyReady && bagQueue.isEmpty() && bodyQueue.isEmpty()) { 
+      System.out.println("Sending kill command to body scan");
+      bodyScan.tell(new StopMessage(), getSelf());
+      System.out.println("Sending kill command to bag scan");
+      bagScan.tell(new StopMessage(), getSelf());
+      this.getContext().stop(getSelf());
+    }
   }
 }

@@ -30,9 +30,10 @@ public class Jail extends UntypedActor {
   }
 
   private void onReceive(StopMessage killCommand){
-    System.out.println("Jail received kill command");
+    System.out.println("Jail received kill command.");
     if(--lineCount == 0){
-      this.getContext().stop(getSelf());
+      //Shutdown what remains of the system. Jail is the last to die.
+      this.getContext().system().terminate();
     }
   }
 
