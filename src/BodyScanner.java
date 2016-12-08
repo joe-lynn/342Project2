@@ -23,7 +23,16 @@ public class BodyScanner extends UntypedActor {
   public void onReceive(Object message) {
     if(message instanceof Passenger) {
       onReceive((Passenger)message);
+    } else if(message instanceof StopMessage){
+      onReceive((StopMessage)message);
     }
+  }
+
+  private void onReceive(StopMessage killCommand){
+    System.out.println("Body Scan has received kill command");
+    System.out.println("Sending kill command to security station");
+      station.tell(killCommand, getSelf());
+      this.getContext().stop(getSelf());
   }
 
   public void onReceive(Passenger passenger) {

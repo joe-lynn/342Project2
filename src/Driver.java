@@ -35,10 +35,13 @@ public class Driver{
         }
 
         for(int i = 0; i < PASSENGERS; i += 1){
-            DCheck.tell(Passengers.get(i), null);
+            DCheck.tell(Passengers.get(i), ActorRef.noSender());
             //print statement
-            System.out.println(Passengers.get(i).getName() + " is being sent to the Document Check.");
+            System.out.println("Passenger " + Passengers.get(i).getName() + " is being sent to the Document Check.");
         }
+        StopMessage killCommand = new StopMessage();
+        System.out.println("Sending Kill Command to Document Check");
+        DCheck.tell(killCommand, ActorRef.noSender());
 
     }
 

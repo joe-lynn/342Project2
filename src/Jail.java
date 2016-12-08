@@ -13,14 +13,26 @@ public class Jail extends UntypedActor {
   private List<Passenger> jailed;
   //Jail needs to know the number of security stations feeding it
   private final int SSNum;
+  private int lineCount;
 
   public Jail(Integer SSNum) {
      jailed = new ArrayList<Passenger>();
      this.SSNum = SSNum;
+    lineCount = SSNum;
   }
+
   public void onReceive(Object message) {
     if(message instanceof Passenger) {
       onReceive((Passenger)message);
+    } else if(message instanceof StopMessage){
+      onReceive((StopMessage)message);
+    }
+  }
+
+  private void onReceive(StopMessage killCommand){
+    System.out.println("Jail received kill command");
+    if(--lineCount == 0){
+      this.getContext().stop(getSelf());
     }
   }
 

@@ -19,15 +19,28 @@ public class DocumentCheck extends UntypedActor {
     public void onReceive(Object message) {
         if(message instanceof Passenger) {
             onReceive((Passenger)message);
+        } else if(message instanceof StopMessage){
+            onReceive((StopMessage)message);
         }
     }
 
-    public void onReceive(Passenger passenger) {
+    private void onReceive(StopMessage killCommand){
+        System.out.println("Document check has received kill command");
+        for(ActorRef ref : queueList){
+            System.out.println("Sending kill command to queues");
+            ref.tell(killCommand, getSelf());
+        }
+
+        this.getContext().stop(getSelf());
+    }
+
+
+    private void onReceive(Passenger passenger) {
         //Print arrival statement
-        System.out.println(passenger.getName() + " has arrived at the Document Check.");
+        System.out.println("Passenger " + passenger.getName() + " has arrived at the Document Check.");
         if(Math.random()*5 < 4){
             //Print pass statement
-            System.out.println(passenger.getName() + " has passed the Document Check.");
+            System.out.println("Passenger " + passenger.getName() + " has passed the Document Check.");
             lastQueue += 1;
             if (lastQueue == queueList.size()) {
                 lastQueue = 0;
@@ -35,12 +48,12 @@ public class DocumentCheck extends UntypedActor {
 
             queueList.get(lastQueue).tell(passenger, getSelf());
 
-            System.out.println(passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
+            System.out.println("Passenger " + passenger.getName() + " is being sent from " + getSelf().path().name() + " to " +
                     queueList.get(lastQueue).path().name());
         }
         else{
             //print fail statement
-            System.out.println(passenger.getName() + " has failed the Document Check.");
+            System.out.println("Passenger " + passenger.getName() + " has failed the Document Check.");
         }
 
     }
